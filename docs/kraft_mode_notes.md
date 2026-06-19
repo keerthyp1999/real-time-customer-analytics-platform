@@ -1,8 +1,10 @@
 # Kafka KRaft Mode Notes
 
-Earlier Kafka used ZooKeeper for cluster coordination and metadata management.
+## What Changed?
 
-Modern Kafka can run in KRaft mode, which means Kafka manages metadata internally without ZooKeeper.
+Older Kafka versions used ZooKeeper for cluster coordination and metadata management.
+
+Modern Kafka can run in KRaft mode, where Kafka manages metadata internally without ZooKeeper.
 
 ## Old Setup
 
@@ -16,32 +18,28 @@ Kafka Broker + ZooKeeper
 Kafka Broker + Kafka Controller
 ```
 
-In this local project, the same Kafka container acts as both:
+## Local Project Setup
+
+The same Kafka container acts as both broker and controller:
 
 ```text
-broker,controller
+KAFKA_PROCESS_ROLES=broker,controller
 ```
 
-## Why KRaft is better
+## Why KRaft is Better for This Project
 
-```text
-No ZooKeeper dependency
-Cleaner local setup
-Modern Kafka architecture
-Easier to explain in interviews
-Closer to current Kafka direction
-```
+- No ZooKeeper dependency
+- Cleaner local setup
+- Modern Kafka architecture
+- Easier to explain in interviews
 
-## Production note
+## Production Note
 
-In real production, you would not use only one node.
+A real production KRaft setup usually has:
 
-A production KRaft setup usually has:
-
-```text
-3 or 5 controller nodes
-multiple broker nodes
-replication factor 3
-monitoring
-security
-```
+- Multiple broker nodes
+- 3 or 5 controller nodes
+- Replication factor 3
+- Monitoring
+- Security
+- Proper storage and backup strategy

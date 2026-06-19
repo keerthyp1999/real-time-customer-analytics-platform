@@ -1,97 +1,130 @@
-# Day 1 Kafka Notes
+# Day 1 - Kafka Notes
 
 ## What is Kafka?
 
-Kafka is a distributed event streaming platform. It is used to move high-volume real-time data from producers to consumers.
+Kafka is a distributed event streaming platform used to move high-volume event data between producers and consumers.
 
-## Producer
-
-A producer writes messages to Kafka topics.
-
-In this project:
+## Project Flow
 
 ```text
-producer.py → customer_events topic
+Python Producer → Kafka Topic → Python Consumer
 ```
 
+## Kafka Mode
+
+This project uses Kafka in KRaft mode.
+
+```text
+Kafka Broker + Kafka Controller
+```
+
+ZooKeeper is not required.
+
 ## Topic
-
-A topic is a named stream of events.
-
-In this project:
 
 ```text
 customer_events
 ```
 
-## Partition
-
-A topic is split into partitions for scalability.
-
-We use 3 partitions locally:
+Configuration:
 
 ```text
-Partition 0
-Partition 1
-Partition 2
+Partitions: 3
+Replication Factor: 1
 ```
 
-## Message Key
+## Producer
 
-The message key decides which partition receives the event.
+A producer writes events to Kafka.
 
 In this project:
 
 ```text
-key = user_id
+kafka/producer/producer.py
 ```
-
-This keeps events for the same user in order.
 
 ## Consumer
 
-A consumer reads events from a Kafka topic.
+A consumer reads events from Kafka.
 
 In this project:
 
 ```text
-test_consumer.py
+kafka/consumer/test_consumer.py
+kafka/consumer/test_consumer_2.py
 ```
+
+Both consumers use the same consumer group:
+
+```text
+customer-activity-test-consumer
+```
+
+## Bootstrap Server
+
+```text
+localhost:9092
+```
+
+This is the broker address used by clients to initially connect to Kafka.
+
+## Partition
+
+A partition is an ordered, append-only log inside a topic.
+
+Partitions allow Kafka to process data in parallel.
+
+## Message Key
+
+The producer uses:
+
+```python
+message_key = event["user_id"]
+```
+
+This keeps events for the same user in the same partition.
 
 ## Consumer Group
 
-A consumer group allows multiple consumers to share work.
+Within a consumer group, a partition is assigned to only one consumer at a time.
 
-Example:
+Example with three partitions and two consumers:
 
 ```text
-3 partitions + 3 consumers = parallel processing
+Partition 0 → Consumer 1
+Partition 1 → Consumer 2
+Partition 2 → Consumer 1
 ```
 
 ## Offset
 
-Offset is the position of a message inside a partition.
+An offset is the position of a message within a partition.
 
-Kafka tracks offsets so consumers know where to continue reading.
+Kafka tracks offsets for each consumer group.
 
-## Reliability Concepts
+Useful command:
 
-This project uses:
-
-```text
-acks=all
-retries=3
-consumer group
-offset tracking
-partitioning by user_id
+```bash
+docker exec kafka-kraft kafka-consumer-groups   --bootstrap-server localhost:9092   --describe   --group customer-activity-test-consumer
 ```
 
-In production, you would also add:
+## Lag
 
 ```text
-replication factor 3
-schema registry
-dead-letter queue
-monitoring
-manual offset commits
+LAG = LOG-END-OFFSET - CURRENT-OFFSET
 ```
+
+Lag tells how many messages are waiting to be consumed.
+
+## Rebalancing
+
+When a new consumer joins or leaves a consumer group, Kafka redistributes partition ownership. This is called rebalancing.
+
+## Reliability Concepts Demonstrated
+
+- Message keys
+- Partitions
+- Consumer groups
+- Offset tracking
+- Lag monitoring
+- Rebalancing
