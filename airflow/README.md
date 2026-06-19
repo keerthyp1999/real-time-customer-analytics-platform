@@ -40,6 +40,9 @@ DatabricksSubmitRunOperator
 
 This allows Airflow to trigger Databricks notebooks using the Databricks Jobs API.
 
+Terraform provisions Bronze, Silver, and Gold Databricks jobs.
+Airflow orchestrates those jobs in dependency order.
+
 ## Reliability Features Included
 
 - Retry configuration
