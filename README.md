@@ -332,15 +332,4 @@ databricks/notebooks/
 
 ---
 
-## Resume Highlights
-
-- Built a real-time customer activity pipeline using Kafka KRaft, Python producers, consumer groups, partitioned topics, and offset tracking.
-- Implemented a Databricks Delta Lake medallion architecture with Bronze, Silver, and Gold layers.
-- Added schema validation, deduplication, event type validation, checkpointing, and business KPI aggregations.
-- Designed an Airflow DAG to orchestrate the customer analytics pipeline with retries and dependency management.
-
----
-
-## Next Step
-
 Add Terraform to provision Databricks resources such as schemas, volumes, jobs, and environment-specific configuration.
